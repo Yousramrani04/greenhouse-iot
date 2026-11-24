@@ -1,0 +1,16 @@
+Relevé du 2026-11-24 21:08:55 UTC
+
+== Conteneurs (docker stats) ==
+NAME                        MEM USAGE / LIMIT    MEM %
+greenhouse-iot-grafana-1    55.63MiB / 512MiB    10.87%
+greenhouse-iot-kafka-ui-1   252.8MiB / 512MiB    49.37%
+greenhouse-iot-kafka-1      476.8MiB / 768MiB    62.08%
+greenhouse-postgres         45.89MiB / 10.7GiB   0.42%
+silo                        206.9MiB / 10.7GiB   1.89%
+
+== Processus hors Docker (Dagster, Streamlit, producteur, consommateurs), RSS en Mo ==
+
+== Mémoire de la machine ==
+               total        used        free      shared  buff/cache   available
+Mem:            10Gi       1.8Gi       1.5Gi        72Mi       7.7Gi       8.9Gi
+Swap:          4.0Gi        12Mi       4.0Gi

@@ -1,0 +1,17 @@
+[21:08:46] Soda Core 3.5.6
+[21:08:47] Using DefaultSampler
+[21:08:47] Using DefaultSampler
+[21:08:47] Using DefaultSampler
+[21:08:47] Scan summary:
+[21:08:47] 5/6 checks PASSED: 
+[21:08:47]     live_measurements in live
+[21:08:47]       row_count > 0 [PASSED]
+[21:08:47]       duplicate_count(sensor_id, event_time) = 0 [PASSED]
+[21:08:47]       moins de 60 capteurs ont déjà émis [PASSED]
+[21:08:47]       freshness(event_time) < 10m [PASSED]
+[21:08:47]       invalid_percent(status) < 10 [PASSED]
+[21:08:47] 1/6 checks FAILED: 
+[21:08:47]     live_measurements in live
+[21:08:47]       capteurs silencieux depuis plus de 10 minutes [FAILED]
+[21:08:47]         value: 12
+[21:08:47] Oops! 1 failures. 0 warnings. 0 errors. 5 pass.

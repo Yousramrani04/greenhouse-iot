@@ -74,6 +74,16 @@ def canonical_unit():
              .when(F.col("metric") == "co2", "ppm"))
 
 
+def read_bronze(spark, paths):
+    """Lit chaque racine Bronze séparément puis les unit : Spark refuse de mélanger
+    deux racines de partitionnement différentes dans un seul read.parquet."""
+    out = None
+    for path in paths:
+        df = spark.read.parquet(path)
+        out = df if out is None else out.unionByName(df, allowMissingColumns=True)
+    return out
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--reset", action="store_true")
@@ -104,7 +114,7 @@ def main() -> None:
         return F.lit(s).cast("timestamp")
 
     # 1. Bronze visible à cet instant, avec la minute de l'EVENT time
-    bronze = (spark.read.parquet(*SOURCES)
+    bronze = (read_bronze(spark, SOURCES)
               .filter(F.col("_ingested_at") < ts(args.cutoff))
               .withColumn("minute_ts", F.date_trunc("minute", "event_time")))
 

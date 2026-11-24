@@ -1,0 +1,22 @@
+[21:08:43] Soda Core 3.5.6
+[21:08:45] Scan summary:
+[21:08:45] 12/13 checks PASSED: 
+[21:08:45]     stg_measurements in silver
+[21:08:45]       row_count > 0 [PASSED]
+[21:08:45]       Schema Check [PASSED]
+[21:08:45]       duplicate_count(sensor_id, minute_ts) = 0 [PASSED]
+[21:08:45]       IOT-05 température hors de -10 à 60 °C [PASSED]
+[21:08:45]       humidité hors de 0 à 100 % [PASSED]
+[21:08:45]       CO2 hors de 0 à 3000 ppm [PASSED]
+[21:08:45]       unité non canonique (°F ou autre) [PASSED]
+[21:08:45]       missing_count(sensor_id) = 0 [PASSED]
+[21:08:45]       missing_count(value) = 0 [PASSED]
+[21:08:45]       invalid_count(metric) = 0 [PASSED]
+[21:08:45]     gold_sensor_availability in silver
+[21:08:45]       row_count > 0 [PASSED]
+[21:08:45]       avg(availability_pct) >= 98 [PASSED]
+[21:08:45] 1/13 checks WARNED: 
+[21:08:45]     gold_sensor_availability in silver
+[21:08:45]       min(availability_pct) warn when < 90 [WARNED]
+[21:08:45]         check_value: 88.06
+[21:08:45] Only 1 warning. 0 failure. 0 errors. 12 pass.

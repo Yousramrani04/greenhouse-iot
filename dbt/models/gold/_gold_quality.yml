@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: gold_sensor_quality
+    description: >
+      Fiabilité d'un capteur : disponibilité, rejets par raison, score de fiabilité.
+      Grain : un capteur (60 attendus). Alimente le classement des capteurs les moins fiables (IOT-08).
+    data_tests:
+      - expression_is_true:
+          arguments:
+            expression: "availability_pct between 0 and 100 and rejection_pct between 0 and 100 and reliability_pct between 0 and 100"
+    columns:
+      - name: sensor_id
+        data_tests: [unique, not_null]

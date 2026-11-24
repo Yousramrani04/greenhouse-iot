@@ -1,0 +1,8 @@
+# Copié dans .dagster_home/ par scripts/run_dagster.sh (historique des exécutions en SQLite local).
+run_coordinator:
+  module: dagster.core.run_coordinator
+  class: QueuedRunCoordinator
+  config:
+    max_concurrent_runs: 1        # jamais deux chaînes en même temps (verrou DuckDB, Spark)
+telemetry:
+  enabled: false

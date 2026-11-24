@@ -3,9 +3,13 @@ version: 2
 sources:
   - name: silver
     description: >
-      Export Parquet de la table Iceberg lake.silver.measurements_1min (job spark/export_silver.py).
-      Grain : un capteur sur une minute, unités homogènes (°C, %, ppm).
+      Exports Parquet des tables Iceberg lake.silver.* (job spark/export_silver.py).
+      measurements_1min : grain un capteur sur une minute, unités homogènes (°C, %, ppm).
+      measurements_rejected : un message rejeté (null, sentinel ou out_of_range).
     meta:
       external_location: "read_parquet('{{ env_var('SILVER_EXPORT_GLOB', 's3://silver/export/measurements_1min/*.parquet') }}')"
     tables:
       - name: measurements_1min
+      - name: measurements_rejected
+        meta:
+          external_location: "read_parquet('{{ env_var('SILVER_REJECTED_GLOB', 's3://silver/export/measurements_rejected/*.parquet') }}')"

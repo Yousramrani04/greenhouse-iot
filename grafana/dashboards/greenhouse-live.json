@@ -1,0 +1,307 @@
+{
+  "uid": "greenhouse-live",
+  "title": "Serres connectées - direct",
+  "tags": [
+    "iot"
+  ],
+  "timezone": "utc",
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "version": 1,
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Température par serre (°C, status = ok)",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "pg-greenhouse"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 10
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "pg-greenhouse"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "rawQuery": true,
+          "rawSql": "SELECT $__timeGroupAlias(event_time, '30s'),\n       greenhouse_id AS metric,\n       avg(value) AS value\nFROM live_measurements\nWHERE $__timeFilter(event_time) AND metric = 'temperature' AND status = 'ok'\nGROUP BY 1, 2\nORDER BY 1"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": {
+            "lineWidth": 1,
+            "spanNulls": 120000,
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 35
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": "gauge",
+      "title": "Température actuelle par serre",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "pg-greenhouse"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 10,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "pg-greenhouse"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT greenhouse_id, round(avg(value)::numeric, 1) AS temperature\nFROM live_measurements\nWHERE metric = 'temperature' AND status = 'ok' AND event_time > now() - interval '2 minutes'\nGROUP BY greenhouse_id\nORDER BY greenhouse_id"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": true,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^temperature$/"
+        },
+        "showThresholdMarkers": true,
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 50,
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 30
+              },
+              {
+                "color": "red",
+                "value": 35
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 3,
+      "type": "gauge",
+      "title": "CO2 actuel par serre",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "pg-greenhouse"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 10,
+        "w": 8,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "pg-greenhouse"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT greenhouse_id, round(avg(value)::numeric, 0) AS co2\nFROM live_measurements\nWHERE metric = 'co2' AND status = 'ok' AND event_time > now() - interval '2 minutes'\nGROUP BY greenhouse_id\nORDER BY greenhouse_id"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": true,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^co2$/"
+        },
+        "showThresholdMarkers": true,
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 3000,
+          "unit": "ppm",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1500
+              },
+              {
+                "color": "red",
+                "value": 2500
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 4,
+      "type": "gauge",
+      "title": "Capteurs actifs (2 dernières minutes)",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "pg-greenhouse"
+      },
+      "gridPos": {
+        "x": 20,
+        "y": 10,
+        "w": 4,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "pg-greenhouse"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT count(DISTINCT sensor_id) AS capteurs_actifs\nFROM live_measurements\nWHERE event_time > now() - interval '2 minutes'"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": true,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^capteurs_actifs$/"
+        },
+        "showThresholdMarkers": true,
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 60,
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 50
+              },
+              {
+                "color": "green",
+                "value": 58
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 5,
+      "type": "table",
+      "title": "Capteurs silencieux (aucune mesure depuis plus de 2 min)",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "pg-greenhouse"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 18,
+        "w": 24,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "pg-greenhouse"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT sensor_id AS capteur, greenhouse_id AS serre, metric AS mesure,\n       max(event_time) AS derniere_mesure,\n       round((extract(epoch FROM now() - max(event_time)) / 60)::numeric, 1) AS minutes_de_silence\nFROM live_measurements\nGROUP BY sensor_id, greenhouse_id, metric\nHAVING max(event_time) < now() - interval '2 minutes'\nORDER BY minutes_de_silence DESC"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true
+      }
+    }
+  ]
+}
