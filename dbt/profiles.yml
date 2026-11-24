@@ -1,0 +1,16 @@
+# Aucun secret ici : les identifiants viennent de l'environnement (voir .env.example).
+greenhouse:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: gold.duckdb
+      threads: 2
+      extensions: [httpfs, parquet]
+      settings:
+        TimeZone: UTC
+        s3_endpoint: "{{ env_var('S3_ENDPOINT', 'localhost:9000') }}"
+        s3_use_ssl: false
+        s3_url_style: path
+        s3_access_key_id: "{{ env_var('MINIO_ROOT_USER') }}"
+        s3_secret_access_key: "{{ env_var('MINIO_ROOT_PASSWORD') }}"

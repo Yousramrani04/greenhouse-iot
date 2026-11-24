@@ -1,0 +1,23 @@
+name: greenhouse
+version: "1.0.0"
+config-version: 2
+profile: greenhouse
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+target-path: target
+clean-targets: [target, dbt_packages, logs]
+
+vars:
+  temp_alert_c: 35          # seuil de dépassement (°C), cf. IOT-07
+  alert_min_minutes: 10     # durée minimale pour parler d'alerte
+  alert_gap_minutes: 3      # un trou de plus de 3 min coupe une période
+  lookback_hours: 2         # fenêtre de recalcul des modèles incrémentaux (retardataires : 30 min max)
+
+models:
+  greenhouse:
+    staging:
+      +materialized: view
+    gold:
+      +materialized: table
