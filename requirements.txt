@@ -9,3 +9,5 @@ psycopg2-binary
 dbt-duckdb
 soda-core-duckdb
 soda-core-postgres
+duckdb<1.1.0
+setuptools

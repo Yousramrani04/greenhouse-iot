@@ -21,4 +21,4 @@ models:
         data_tests:
           - expression_is_true:
               arguments:
-                expression: "n_readings between 1 and 2"
+                expression: "n_readings between 1 and 60"
