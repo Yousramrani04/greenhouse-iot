@@ -1,0 +1,10 @@
+# Dépendances légères de la CI (pas de Kafka, Spark ni Docker)
+numpy
+pandas
+pyarrow
+scikit-learn
+pytest
+boto3
+python-dotenv
+duckdb<1.1.0
+dbt-duckdb
