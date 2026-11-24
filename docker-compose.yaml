@@ -5,8 +5,8 @@ services:
     command: server /data --console-address ":9001"
     restart: unless-stopped
     ports:
-      - "${MINIO_API_PORT}:9000"      # API S3
-      - "${MINIO_CONSOLE_PORT}:9001"  # console web
+      - "${MINIO_API_PORT}:9000"
+      - "${MINIO_CONSOLE_PORT}:9001"
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
@@ -29,5 +29,48 @@ services:
       echo 'buckets prets';
       "
 
+  postgres:
+    image: postgres:16-alpine
+    container_name: greenhouse-postgres
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./sql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Job éphémère : lancé à la demande (docker compose run), pas par "up -d"
+  spark:
+    build: ./spark
+    image: greenhouse/spark:4.0.5-iceberg1.10.1
+    profiles: ["jobs"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      silo:
+        condition: service_started
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      ICEBERG_CATALOG_DB: ${ICEBERG_CATALOG_DB}
+      S3_ENDPOINT_INTERNAL: http://silo:9000
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      AWS_REGION: us-east-1
+    volumes:
+      - ./spark:/opt/jobs:ro
+    mem_limit: 3g
+
 volumes:
   silo_data:
+  pg_data:
