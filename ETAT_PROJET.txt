@@ -1,0 +1,117 @@
+=== Date ===
+Tue Nov 24 20:00:38 +00 2026
+=== Commits ===
+fab1975 feat(IOT-05): controles Soda (Silver, disponibilite Gold, fraicheur live) ; Silver lit le live ; script de chaine
+d3c1418 feat(IOT-05): controles Soda (Silver, disponibilite Gold, fraicheur live), staging dbt en table
+e90bc4e feat(IOT-04): modeles Gold, macro incrementale et 19 tests dbt
+1b9aa32 feat(IOT-04): couche Gold dbt+DuckDB (5min, 1h, disponibilité, périodes de dépassement) et 19 tests
+8b835e7 feat(IOT-03): le job Silver lit aussi le Bronze live, export Parquet de Silver pour dbt
+97a4112 feat(IOT-03): integration des retardataires, time travel Iceberg et verification Silver
+daa9414 feat(IOT-01,IOT-02): kafka + kafka-ui, producteur live, groupes bronze-writer et grafana-writer
+9b0364d feat(IOT-03): integration des retardataires, time travel Iceberg et verification Silver
+78f4855 feat(IOT-03): job Silver (dedoublonnage, conversion, MERGE) et verifications
+0084cfa feat(IOT-03): lecture du Bronze par Spark via S3A
+cb50431 feat(IOT-03): postgres (catalogue), image Spark+Iceberg, test de connexion
+1c31b06 test(IOT-01): script de verification du Bronze
+8ab541f feat(IOT-01): generateur d'historique avec 6 defauts, Bronze partitionne par event_date
+13aa01e chore: squelette du projet et stockage S3 (Silo)
+=== Fichiers suivis par git ===
+.env.example
+.gitignore
+README.md
+dbt/dbt_project.yml
+dbt/macros/greenhouse_window.sql
+dbt/models/gold/_gold.yml
+dbt/models/gold/dim_sensor.sql
+dbt/models/gold/gold_alert_periods.sql
+dbt/models/gold/gold_greenhouse_1h.sql
+dbt/models/gold/gold_greenhouse_5min.sql
+dbt/models/gold/gold_sensor_availability.sql
+dbt/models/staging/_sources.yml
+dbt/models/staging/_staging.yml
+dbt/models/staging/stg_measurements.sql
+dbt/profiles.yml
+dbt/tests/assert_5min_equals_1h.sql
+dbt/tests/assert_5min_reconciles_silver.sql
+dbt/tests/generic/expression_is_true.sql
+dbt/tests/generic/unique_combination.sql
+docker-compose.yaml
+requirements.txt
+scripts/check_export.py
+scripts/expected_late.py
+scripts/expected_silver.py
+scripts/refresh_chain.sh
+scripts/verify_bronze.py
+soda/checks_live.yml
+soda/checks_silver.yml
+soda/configuration.yml
+spark/Dockerfile
+spark/bronze_check.py
+spark/export_silver.py
+spark/session.py
+spark/silver_job.py
+spark/silver_timetravel.py
+spark/silver_verify.py
+spark/smoke_test.py
+sql/init/01-databases.sql
+sql/init/02-live.sql
+src/__init__.py
+src/common/__init__.py
+src/common/defects.py
+src/common/sensors.py
+src/generator/__init__.py
+src/generator/ingest_capteurs.py
+src/streaming/__init__.py
+src/streaming/bronze_writer.py
+src/streaming/classify.py
+src/streaming/grafana_writer.py
+src/streaming/producer_capteurs.py
+=== Modifications non commitees ===
+?? ETAT_PROJET.txt
+=== Services docker compose ===
+postgres
+silo
+silo-init
+kafka
+kafka-init
+kafka-ui
+=== Conteneurs ===
+NAME                          IMAGE                                     STATUS
+greenhouse-iot-kafka-1        apache/kafka:3.9.0                        Up 9 hours (healthy)
+greenhouse-iot-kafka-init-1   apache/kafka:3.9.0                        Exited (0) 9 hours ago
+greenhouse-iot-kafka-ui-1     provectuslabs/kafka-ui:v0.7.2             Up 9 hours
+greenhouse-iot-silo-init-1    pgsty/mc:latest                           Exited (0) 9 hours ago
+greenhouse-postgres           postgres:16-alpine                        Up 11 hours (healthy)
+silo                          pgsty/silo:RELEASE.2026-10-26T00-00-00Z   Up 22 hours
+=== Memoire des conteneurs ===
+NAME                        MEM USAGE / LIMIT
+greenhouse-iot-kafka-ui-1   252.5MiB / 512MiB
+greenhouse-iot-kafka-1      472.1MiB / 768MiB
+greenhouse-postgres         43.9MiB / 10.7GiB
+silo                        213.5MiB / 10.7GiB
+=== Versions ===
+Python 3.12.3
+boto3==1.44.10
+confluent-kafka==2.16.2
+dbt-adapters==1.24.6
+dbt-common==1.39.0
+dbt-core==1.12.7
+dbt-core-experimental-parser==2.0.11
+dbt-duckdb==1.11.1
+dbt-extractor==0.6.0
+dbt-protos==1.0.615
+duckdb==1.0.0
+numpy==2.5.5
+pandas==3.1.1
+psycopg2-binary==2.9.13
+pyarrow==26.0.1
+setuptools==84.2.1
+soda-core==3.5.6
+soda-core-duckdb==3.5.6
+soda-core-postgres==3.5.6
+=== Le Gold contient-il du live ? ===
+[(603526, datetime.datetime(2026, 11, 16, 0, 0), datetime.datetime(2026, 11, 22, 23, 59))]
+=== Silver lit-il le live ? ===
+28:HISTORY_SOURCES = ["s3a://bronze/historique/capteurs/"]
+29:LIVE_SOURCES = ["s3a://bronze/live/capteurs/"]
+85:    SOURCES = HISTORY_SOURCES if args.history_only else HISTORY_SOURCES + LIVE_SOURCES
