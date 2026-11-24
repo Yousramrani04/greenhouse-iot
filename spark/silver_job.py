@@ -25,6 +25,8 @@ JOB = "silver_1min"
 SENTINEL = -999.0
 EPOCH = "1970-01-01 00:00:00"
 FAR_FUTURE = "2100-01-01 00:00:00"
+HISTORY_SOURCES = ["s3a://bronze/historique/capteurs/"]
+LIVE_SOURCES = ["s3a://bronze/live/capteurs/"]
 
 # Plage physiquement plausible, en unité canonique (°C, %, ppm)
 PLAUSIBLE = {
@@ -76,8 +78,11 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--reset", action="store_true")
     ap.add_argument("--reprocess", action="store_true")
+    ap.add_argument("--history-only", action="store_true",
+                    help="ne lit que l'historique (reproduit les chiffres de référence)")
     ap.add_argument("--cutoff", default=FAR_FUTURE)
     args = ap.parse_args()
+    SOURCES = HISTORY_SOURCES if args.history_only else HISTORY_SOURCES + LIVE_SOURCES
 
     spark = get_spark("silver-1min")
     spark.conf.set("spark.sql.shuffle.partitions", "8")   # peu de données : peu de petits fichiers
@@ -99,7 +104,7 @@ def main() -> None:
         return F.lit(s).cast("timestamp")
 
     # 1. Bronze visible à cet instant, avec la minute de l'EVENT time
-    bronze = (spark.read.parquet("s3a://bronze/historique/capteurs/")
+    bronze = (spark.read.parquet(*SOURCES)
               .filter(F.col("_ingested_at") < ts(args.cutoff))
               .withColumn("minute_ts", F.date_trunc("minute", "event_time")))
 
