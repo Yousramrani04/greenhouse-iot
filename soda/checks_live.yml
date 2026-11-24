@@ -1,0 +1,22 @@
+# Contrôles du chemin temps réel (table PostgreSQL live_measurements lue par Grafana).
+# Exécution : soda scan -d live -c soda/configuration.yml soda/checks_live.yml
+
+checks for live_measurements:
+  - row_count > 0
+  - freshness(event_time) < 10m
+  - invalid_percent(status) < 10:
+      valid values: [ok]
+  - duplicate_count(sensor_id, event_time) = 0
+  - failed rows:
+      name: moins de 60 capteurs ont déjà émis
+      fail query: |
+        select count(distinct sensor_id) as capteurs_vus
+        from live_measurements
+        having count(distinct sensor_id) < 60
+  - failed rows:
+      name: capteurs silencieux depuis plus de 10 minutes
+      fail query: |
+        select sensor_id, max(event_time) as derniere_mesure
+        from live_measurements
+        group by sensor_id
+        having max(event_time) < now() - interval '10 minutes'

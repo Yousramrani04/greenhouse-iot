@@ -1,0 +1,14 @@
+# Aucun secret ici : les valeurs viennent de l'environnement (.env).
+data_source silver:
+  type: duckdb
+  path: dbt/gold.duckdb
+  read_only: true
+
+data_source live:
+  type: postgres
+  host: localhost
+  port: ${POSTGRES_PORT}
+  username: ${POSTGRES_USER}
+  password: ${POSTGRES_PASSWORD}
+  database: ${POSTGRES_DB}
+  schema: public

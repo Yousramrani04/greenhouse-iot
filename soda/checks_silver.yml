@@ -1,0 +1,31 @@
+# Contrôles qualité de la couche Silver (miroir stg_measurements dans DuckDB) et de la disponibilité Gold.
+# Exécution : soda scan -d silver -c soda/configuration.yml soda/checks_silver.yml
+
+checks for stg_measurements:
+  - row_count > 0
+  - schema:
+      fail:
+        when required column missing: [sensor_id, greenhouse_id, metric, minute_ts, value, unit, n_readings]
+  - missing_count(sensor_id) = 0
+  - missing_count(value) = 0
+  - duplicate_count(sensor_id, minute_ts) = 0
+  - invalid_count(metric) = 0:
+      valid values: [temperature, air_humidity, soil_humidity, co2]
+  - failed rows:
+      name: IOT-05 température hors de -10 à 60 °C
+      fail condition: metric = 'temperature' and (value < -10 or value > 60)
+  - failed rows:
+      name: humidité hors de 0 à 100 %
+      fail condition: metric in ('air_humidity', 'soil_humidity') and (value < 0 or value > 100)
+  - failed rows:
+      name: CO2 hors de 0 à 3000 ppm
+      fail condition: metric = 'co2' and (value < 0 or value > 3000)
+  - failed rows:
+      name: unité non canonique (°F ou autre)
+      fail condition: (metric = 'temperature' and unit <> 'C') or (metric = 'co2' and unit <> 'ppm') or (metric in ('air_humidity', 'soil_humidity') and unit <> '%')
+
+checks for gold_sensor_availability:
+  - row_count > 0
+  - avg(availability_pct) >= 98
+  - min(availability_pct):
+      warn: when < 90
