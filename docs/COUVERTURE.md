@@ -13,17 +13,17 @@ Mettre à jour la colonne « Statut » uniquement après avoir vu la preuve.
 | IOT-06 Grafana : température par serre en direct, jauges, capteurs silencieux | OBL | À CONFIRMER | `grafana/dashboards/greenhouse-live.json` (provisionné) | `docs/preuves/iot06_grafana.png` |
 | IOT-07 alerte > 35 °C pendant 10 min | OBL | À CONFIRMER | `grafana/provisioning/alerting/rules.yml` ; démo `--heat G05` | `docs/preuves/iot07_alerte_firing.png` |
 | IOT-08 Streamlit : historique d'une serre, capteurs les moins fiables | OPT | À CONFIRMER | `app/streamlit_app.py`, `gold_sensor_quality` | `docs/preuves/iot08_streamlit.png` |
-| IOT-09 Isolation Forest comparé aux seuils fixes | OPT | À CONFIRMER | `src/ml/isolation_forest.py`, `docs/iot09_isolation_forest.md` | sortie du script |
+| IOT-09 Isolation Forest comparé aux seuils fixes | OPT | FAIT | `src/ml/isolation_forest.py`, `docs/iot09_isolation_forest.md` | sortie du script |
 
 ## Livrables communs
 | Livrable | Statut | Preuve |
 |---|---|---|
 | README (membres, sujet, schéma, lancement < 5 commandes) | À CONFIRMER (test sur clone propre) | `README.md` |
-| Un seul docker-compose.yml | À CONFIRMER (renommage .yaml → .yml ?) | `docker-compose.yaml` |
+| Un seul docker-compose.yml | FAIT | `docker-compose.yml` |
 | `.env.example` sans secret | FAIT | `.env.example` |
 | Projet dbt, `dbt build` sans erreur | FAIT | `docs/preuves/iot04_dbt_build.txt` |
 | Contrôles Soda | FAIT | `soda/` |
-| Dagster avec planification | À CONFIRMER (run vert + échec démontré) | `orchestration/definitions.py` (`chaine_horaire`) |
+| Dagster avec planification | FAIT (run vert + échec volontaire dans l'historique Dagster) | `orchestration/definitions.py` (`chaine_horaire`) |
 | Application de présentation lancée par le README | À CONFIRMER | `app/streamlit_app.py` |
 | Git + GitHub Actions | À CONFIRMER (CI verte) | `.github/workflows/ci.yml` |
 | Rapport 10 à 15 pages | À FAIRE | voir `docs/PLAN_RAPPORT.md` |

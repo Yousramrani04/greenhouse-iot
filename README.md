@@ -3,7 +3,7 @@
 Projet fil rouge : 15 serres × 4 capteurs (température, humidité de l'air, humidité du sol, CO2) = 60 capteurs,
 données synthétiques volontairement imparfaites (manquants, aberrants, doublons, pannes, °F, messages en retard).
 
-**Membres :** À COMPLÉTER (noms des membres du groupe)
+**Auteure :** Yousra El Amrani (projet réalisé seule)
 
 ## Architecture
 
