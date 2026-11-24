@@ -4,3 +4,5 @@ pyarrow
 boto3
 python-dotenv
 duckdb
+confluent-kafka
+psycopg2-binary
