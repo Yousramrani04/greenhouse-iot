@@ -8,3 +8,10 @@ target/
 logs/
 dbt_packages/
 .pytest_cache/
+
+# --- dbt ---
+dbt/gold.duckdb
+dbt/*.duckdb.wal
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/

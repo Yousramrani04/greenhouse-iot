@@ -6,3 +6,4 @@ python-dotenv
 duckdb
 confluent-kafka
 psycopg2-binary
+dbt-duckdb

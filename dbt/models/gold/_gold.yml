@@ -1,0 +1,59 @@
+version: 2
+
+models:
+  - name: dim_sensor
+    description: "Dimension capteur. Grain : un capteur (60 attendus)."
+    columns:
+      - name: sensor_id
+        data_tests: [unique, not_null]
+      - name: greenhouse_id
+        data_tests: [not_null]
+
+  - name: gold_greenhouse_5min
+    description: >
+      Moyenne pondérée, minimum et maximum (des moyennes par minute) par serre, mesure et fenêtre de 5 min.
+      Grain : serre x mesure x fenêtre de 5 minutes (UTC). Incrémental avec recalcul des 2 dernières heures.
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [greenhouse_id, metric, bucket_start]
+      - expression_is_true:
+          arguments:
+            expression: "min_value <= avg_value + 1e-9 and avg_value <= max_value + 1e-9"
+    columns:
+      - name: avg_value
+        data_tests: [not_null]
+
+  - name: gold_greenhouse_1h
+    description: "Mêmes indicateurs par heure. Grain : serre x mesure x heure (UTC). Incrémental."
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [greenhouse_id, metric, bucket_start]
+      - expression_is_true:
+          arguments:
+            expression: "n_minutes between 1 and 60"
+    columns:
+      - name: greenhouse_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_sensor')
+                field: greenhouse_id
+
+  - name: gold_sensor_availability
+    description: "Disponibilité d'un capteur sur un jour : minutes présentes / minutes attendues. Grain : capteur x jour."
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [sensor_id, day]
+      - expression_is_true:
+          arguments:
+            expression: "availability_pct between 0 and 100 and present_minutes <= expected_minutes"
+
+  - name: gold_alert_periods
+    description: "Périodes continues de température au-dessus du seuil. Grain : une période par serre."
+    data_tests:
+      - expression_is_true:
+          arguments:
+            expression: "end_ts >= start_ts and duration_minutes >= n_minutes"

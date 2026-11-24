@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: silver
+    description: >
+      Export Parquet de la table Iceberg lake.silver.measurements_1min (job spark/export_silver.py).
+      Grain : un capteur sur une minute, unités homogènes (°C, %, ppm).
+    meta:
+      external_location: "read_parquet('{{ env_var('SILVER_EXPORT_GLOB', 's3://silver/export/measurements_1min/*.parquet') }}')"
+    tables:
+      - name: measurements_1min
