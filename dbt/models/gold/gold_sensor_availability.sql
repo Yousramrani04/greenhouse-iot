@@ -1,17 +1,27 @@
 -- Grain : un capteur x un jour (UTC).
--- Minutes attendues = étendue réellement observée ce jour-là sur TOUS les capteurs
--- (le jour en cours est partiel ; un jour sans aucune donnée n'apparaît pas).
-with days as (
-    select
-        cast(minute_ts as date)                                   as day,
-        date_diff('minute', min(minute_ts), max(minute_ts)) + 1   as expected_minutes
+-- Minutes attendues = minutes où la plateforme était ACTIVE, c'est-à-dire où au moins la moitié des capteurs
+-- ont émis (variable active_sensors_share). Une minute où presque aucun capteur n'émet correspond à un arrêt
+-- de la source (producteur arrêté), pas à la panne d'un capteur : elle est détectée par la fraîcheur Soda live.
+with per_minute as (
+    select minute_ts, count(distinct sensor_id) as n_sensors
     from {{ ref('stg_measurements') }}
     group by 1
 ),
+active_minutes as (
+    select minute_ts
+    from per_minute
+    where n_sensors >= {{ var('active_sensors_share', 0.5) }} * (select count(*) from {{ ref('dim_sensor') }})
+),
+days as (
+    select cast(minute_ts as date) as day, count(*) as expected_minutes
+    from active_minutes
+    group by 1
+),
 present as (
-    select sensor_id, cast(minute_ts as date) as day,
-           count(*) as present_minutes, sum(n_readings) as n_readings
-    from {{ ref('stg_measurements') }}
+    select m.sensor_id, cast(m.minute_ts as date) as day,
+           count(*) as present_minutes, sum(m.n_readings) as n_readings
+    from {{ ref('stg_measurements') }} m
+    join active_minutes a using (minute_ts)
     group by 1, 2
 )
 select
