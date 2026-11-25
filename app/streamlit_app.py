@@ -11,6 +11,7 @@ from datetime import datetime
 from pathlib import Path
 
 import duckdb
+import pandas as pd
 import plotly.express as px
 import streamlit as st
 
@@ -83,8 +84,12 @@ with tab1:
     if df.empty:
         st.info("Aucune donnée pour cette sélection.")
     else:
+        # heures sans mesure -> NaN : un trou apparaît au lieu d'une fausse ligne droite
+        full = pd.date_range(df["bucket_start"].min(), df["bucket_start"].max(), freq="1h")
+        df = df.set_index("bucket_start").reindex(full).rename_axis("bucket_start").reset_index()
         fig = px.line(df, x="bucket_start", y=["avg_value", "min_value", "max_value"],
                       labels={"bucket_start": "Heure (UTC)", "value": METRIC_LABELS[metric], "variable": ""})
+        fig.update_traces(connectgaps=False)
         if metric == "temperature":
             fig.add_hline(y=35, line_dash="dash", line_color="red", annotation_text="Seuil 35 °C")
         st.plotly_chart(fig, use_container_width=True)
@@ -99,9 +104,11 @@ with tab2:
     q = query(f"""select sensor_id, greenhouse_id, metric, availability_pct, n_null, n_sentinel,
                          n_out_of_range, n_rejected, rejection_pct, reliability_pct
                   from gold_sensor_quality order by reliability_pct asc, sensor_id limit {n}""", ver)
-    st.caption("Fiabilité = disponibilité × (1 − part de messages rejetés). Plus bas = moins fiable.")
+    st.caption("Fiabilité = disponibilité × (1 − part de messages rejetés). Plus bas = moins fiable. L'axe est zoomé : les écarts sont de quelques points.")
     fig2 = px.bar(q, x="reliability_pct", y="sensor_id", orientation="h", color="metric",
                   labels={"reliability_pct": "Fiabilité (%)", "sensor_id": "Capteur"})
-    fig2.update_yaxes(autorange="reversed")
+    # ordre des barres = ordre du classement (sinon plotly les regroupe par couleur), axe zoomé sur les valeurs
+    fig2.update_yaxes(autorange="reversed", categoryorder="array", categoryarray=q["sensor_id"].tolist())
+    fig2.update_xaxes(range=[max(0.0, float(q["reliability_pct"].min()) - 2), 100])
     st.plotly_chart(fig2, use_container_width=True)
     st.dataframe(q, use_container_width=True)
