@@ -89,7 +89,7 @@ with tab1:
         df = df.set_index("bucket_start").reindex(full).rename_axis("bucket_start").reset_index()
         fig = px.line(df, x="bucket_start", y=["avg_value", "min_value", "max_value"],
                       labels={"bucket_start": "Heure (UTC)", "value": METRIC_LABELS[metric], "variable": ""})
-        fig.update_traces(connectgaps=False)
+        fig.update_traces(connectgaps=False, mode="lines+markers", marker={"size": 4})
         if metric == "temperature":
             fig.add_hline(y=35, line_dash="dash", line_color="red", annotation_text="Seuil 35 °C")
         st.plotly_chart(fig, use_container_width=True)
