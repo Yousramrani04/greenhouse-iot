@@ -1,4 +1,4 @@
-Validation du 2026-11-24 21:08:21 UTC
+Validation du 2026-11-25 09:56:38 UTC
 [OK] conteneur silo démarré
 [OK] conteneur kafka démarré
 [OK] conteneur kafka-ui démarré
@@ -7,25 +7,25 @@ Validation du 2026-11-24 21:08:21 UTC
 [OK] topic capteurs : 6 partitions
 [OK] groupe bronze-writer existe
 [OK] groupe grafana-writer existe
-     retard bronze-writer : 0 messages
-     retard grafana-writer : 124 messages
-     live_measurements (lignes | capteurs | dernière mesure UTC) : 30191|60|2026-11-24 21:08:07
+     retard bronze-writer : 301 messages
+     retard grafana-writer : 0 messages
+     live_measurements (lignes | capteurs | dernière mesure UTC) : 133418|60|2026-11-25 09:56:58
 [OK] live_measurements non vide
 [OK] live : 60 capteurs ont émis
 [OK] Grafana en bonne santé
 [OK] dashboard greenhouse-live provisionné
 [OK] règle d'alerte provisionnée
-     état des alertes : Température > 35 °C pendant 10 min / - : Normal (NoData); Température > 35 °C pendant 10 min / - : Error
-[KO] Dagster répond (http://localhost:3100)
-[KO] Streamlit répond (http://localhost:8501)
-     Gold (capteurs | fiabilité | dernière minute) : 60 60 2026-11-24 11:45:00
+     état des alertes : Température > 35 °C pendant 10 min / - : Alerting; Température > 35 °C pendant 10 min / - : Normal; Température > 35 °C pendant 10 min / - : Normal; Température > 35 °C pendant 10 min / - : Normal; Température > 35 °C pendant 10 min / - : Normal; Température > 35 °C pendant 10 min / - : Normal; Température > 35 °C pendant 10 min / - : Normal; Température > 35 °C pendant 10 min / - : Normal; Température > 35 °C pendant 10 min / - : Normal; Température > 35 °C pendant 10 min / - : Normal; Température > 35 °C pendant 10 min / - : Normal; Température > 35 °C pendant 10 min / - : Normal; Température > 35 °C pendant 10 min / - : Normal; Température > 35 °C pendant 10 min / - : Normal; Température > 35 °C pendant 10 min / - : Normal
+[OK] Dagster répond (http://localhost:3100)
+[OK] Streamlit répond (http://localhost:8501)
+     Gold (capteurs | fiabilité | dernière minute) : 60 60 2026-11-25 09:00:00
 [OK] Gold : 60 capteurs et 60 lignes de fiabilité
      Soda silver : code 1 (0 ok, 1 avertissement, 2 échec, 3 erreur) ; détail : docs/preuves/soda_silver.txt
 [OK] Soda silver sans échec
-     Soda live : code 2 (0 ok, 1 avertissement, 2 échec, 3 erreur) ; détail : docs/preuves/soda_live.txt
-[KO] Soda live en échec
+     Soda live : code 0 (0 ok, 1 avertissement, 2 échec, 3 erreur) ; détail : docs/preuves/soda_live.txt
+[OK] Soda live sans échec
 [OK] pytest
 [OK] résultats IOT-09 présents
 [OK] .env absent du dépôt git
 [OK] aucun secret dans .env.example
-Résultat : 19 OK, 3 KO
+Résultat : 22 OK, 0 KO

@@ -1,0 +1,64 @@
+ Container greenhouse-postgres Running 
+ Container silo Running 
+ Container greenhouse-postgres Waiting 
+ Container greenhouse-postgres Healthy 
+ Container greenhouse-iot-spark-run-e10c65a1fa19 Creating 
+ Container greenhouse-iot-spark-run-e10c65a1fa19 Created 
+WARNING: Using incubator modules: jdk.incubator.vector
+Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
+26/11/25 09:55:58 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+== rejets par raison (attendu : null 24184, sentinel 996, out_of_range ~5944) ==
+26/11/25 09:56:10 WARN JdbcCatalog: JDBC catalog is initialized without view support. To auto-migrate the database's schema and enable view support, set jdbc.schema-version=V1
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
++------------+-----+
+|      reason|count|
++------------+-----+
+|        null|26046|
+|out_of_range| 6409|
+|    sentinel| 1296|
++------------+-----+
+
+== lignes Silver et mesures valides (attendu : ~603500 et ~1177600) ==
++------+---------------+
+|lignes|mesures_valides|
++------+---------------+
+|611975|        1268293|
++------+---------------+
+
+== garde-fous (attendu : 0, 0, 0) ==
++---------------------+----------+--------+
+|unites_non_canoniques|hors_plage|doublons|
++---------------------+----------+--------+
+|                    0|         0|       0|
++---------------------+----------+--------+
+
+== médiane de température par serre (attendu : 22.5 à 25.5 (24 + biais de serre), jamais ~75 pour G04/G09/G13) ==
++-------------+---------+
+|greenhouse_id|mediane_c|
++-------------+---------+
+|          G01|     24.8|
+|          G02|    23.79|
+|          G03|    25.06|
+|          G04|    24.53|
+|          G05|    22.92|
+|          G06|    25.36|
+|          G07|    24.69|
+|          G08|     24.8|
+|          G09|    22.84|
+|          G10|    23.69|
+|          G11|     23.6|
+|          G12|    25.25|
+|          G13|    24.38|
+|          G14|    24.91|
+|          G15|    23.69|
++-------------+---------+
+
+== fichiers de données de la table (attendu : quelques dizaines au plus) ==
++--------+---+
+|fichiers| mo|
++--------+---+
+|       9|8.7|
++--------+---+
+

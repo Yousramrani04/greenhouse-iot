@@ -19,3 +19,4 @@ dbt/.user.yml
 .venv-dagster/
 .dagster_home/
 ci_sample/
+*.bak
