@@ -42,6 +42,8 @@ python -m src.generator.ingest_capteurs --end 2026-11-23T00:00:00   # 7 jours d'
 bash scripts/refresh_chain.sh   # Silver (Spark) -> export -> Gold (dbt) -> contrôles Soda ; 1er lancement : build de l'image Spark
 ```
 
+> Avant le démarrage du producteur, `refresh_chain.sh` signale des échecs Soda live (aucune donnée temps réel) : c'est attendu, ce contrôle est informatif et ne bloque pas la chaîne.
+
 ### Temps réel (3 terminaux, venv activé, depuis la racine)
 ```bash
 python -m src.streaming.producer_capteurs --interval 5                # producteur (ajouter --heat G05 pour une canicule)

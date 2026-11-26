@@ -1,0 +1,39 @@
+Test du README sur clone propre, 2026-11-26 (git clone + 5 commandes du README)
+
+==> Spark : silver_job.py
+nouveaux messages : 1220746
+minutes recalculées : 604374
+messages uniques par statut (reason NULL = valide) :
++------------+-------+
+|      reason|  count|
++------------+-------+
+|        NULL|1177623|
+|        null|  24184|
+|out_of_range|   5943|
+|    sentinel|    996|
++------------+-------+
+Silver à jour.
+==> Spark : export_silver.py
+export terminé : 603526 lignes -> s3://silver/export/measurements_1min/
+export terminé : 31123 lignes -> s3://silver/export/measurements_rejected/
+==> dbt build
+[0m10:49:55  [32mCompleted successfully[0m
+[0m10:49:55  
+[0m10:49:55  Done. PASS=30 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=30
+==> Soda : soda/checks_silver.yml
+[10:49:58] 12/13 checks PASSED: 
+[10:49:58] 1/13 checks WARNED: 
+[10:49:58]       min(availability_pct) warn when < 90 [WARNED]
+[10:49:58] Only 1 warning. 0 failure. 0 errors. 12 pass.
+    code de sortie Soda : 1 (0=ok, 1=avertissement, 2=échec, 3=erreur)
+==> Soda : soda/checks_live.yml
+[10:49:59] 3/6 checks PASSED: 
+[10:49:59] 3/6 checks FAILED: 
+[10:49:59]       row_count > 0 [FAILED]
+[10:49:59]       moins de 60 capteurs ont déjà émis [FAILED]
+[10:49:59]       freshness(event_time) < 10m [FAILED]
+[10:49:59] Oops! 3 failures. 0 warnings. 0 errors. 3 pass.
+    code de sortie Soda : 2 (0=ok, 1=avertissement, 2=échec, 3=erreur)
+Chaîne terminée.
+
+Temps réel (producteur + 2 consommateurs, 2 min) : Soda live 6/6 PASSED ; Grafana /api/health database=ok

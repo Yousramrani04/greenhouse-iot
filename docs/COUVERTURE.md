@@ -18,7 +18,7 @@ Mettre à jour la colonne « Statut » uniquement après avoir vu la preuve.
 ## Livrables communs
 | Livrable | Statut | Preuve |
 |---|---|---|
-| README (membres, sujet, schéma, lancement < 5 commandes) | À CONFIRMER (test sur clone propre) | `README.md` |
+| README (membres, sujet, schéma, lancement < 5 commandes) | FAIT (clone propre testé le 2026-11-26) | `README.md`, `docs/preuves/clone_propre.txt` |
 | Un seul docker-compose.yml | FAIT | `docker-compose.yml` |
 | `.env.example` sans secret | FAIT | `.env.example` |
 | Projet dbt, `dbt build` sans erreur | FAIT | `docs/preuves/iot04_dbt_build.txt` |
@@ -26,4 +26,4 @@ Mettre à jour la colonne « Statut » uniquement après avoir vu la preuve.
 | Dagster avec planification | FAIT (run vert + échec volontaire dans l'historique Dagster) | `orchestration/definitions.py` (`chaine_horaire`) ; run planifié réussi, voir `docs/preuves/dagster_runs.jpg` |
 | Application de présentation lancée par le README | FAIT | `app/streamlit_app.py` |
 | Git + GitHub Actions | FAIT (runs #1 et #2 verts) | `.github/workflows/ci.yml` |
-| Rapport 10 à 15 pages | À FAIRE | voir `docs/PLAN_RAPPORT.md` |
+| Rapport 10 à 15 pages | FAIT (rédigé ; export PDF à faire) | rapport dans Claude Docs ; plan `docs/PLAN_RAPPORT.md` |
