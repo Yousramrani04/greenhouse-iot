@@ -17,6 +17,7 @@ Usage :
 """
 import argparse
 
+from pyspark.errors import AnalysisException
 from pyspark.sql import Window, functions as F
 
 from session import get_spark
@@ -79,8 +80,16 @@ def read_bronze(spark, paths):
     deux racines de partitionnement différentes dans un seul read.parquet."""
     out = None
     for path in paths:
-        df = spark.read.parquet(path)
+        try:
+            df = spark.read.parquet(path)
+        except AnalysisException as e:
+            if "PATH_NOT_FOUND" in str(e):
+                print(f"Bronze absent, ignoré : {path}")
+                continue
+            raise
         out = df if out is None else out.unionByName(df, allowMissingColumns=True)
+    if out is None:
+        raise RuntimeError("Aucune donnée Bronze trouvée (historique et live absents)")
     return out
 
 
